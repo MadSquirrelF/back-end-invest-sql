@@ -1,0 +1,124 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  username    String @default("No name")
+  description String @default("New user")
+  firstname   String
+  email       String @unique
+  password    String
+  lastname    String
+  phone       String
+  country     String @default("Россия")
+  city        String @default("Челябинск")
+  street      String
+  sex         String @default("Мужской")
+  age         Int    @default(18)
+  avatarPath  String @default("/uploads/default-avatar.svg") @map("avatar_path")
+
+  isEmailValid Boolean  @default(false) @map("is_email_valid")
+  role         UserRole @default(USER)
+
+  favorites Product[]
+  posts     Post[]
+  reviews   Review[]
+  orders    Order[]
+
+  @@map("user")
+}
+
+model Post {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  title       String
+  slug        String @unique
+  description String
+
+  author User @relation(fields: [userId], references: [id])
+
+  category String @default("Новость")
+  views    Int    @default(0)
+  userId   String @map("user_id")
+
+  @@map("post")
+}
+
+model Product {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  title       String
+  slug        String @unique
+  description String
+
+  views  Int     @default(0)
+  user   User?   @relation(fields: [userId], references: [id])
+  userId String? @map("user_id")
+
+  category String @default("ПВХ Профиль")
+
+  brand String @default("Schtern")
+
+  reviews Review[]
+  order   Order?   @relation(fields: [orderId], references: [id])
+  orderId String?  @map("order_id")
+
+  @@map("product")
+}
+
+model Review {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  rating    Int
+  text      String
+  product   Product? @relation(fields: [productId], references: [id])
+  productId String?  @map("product_id")
+  user      User?    @relation(fields: [userId], references: [id])
+  userId    String?  @map("user_id")
+
+  @@map("review")
+}
+
+model Order {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  status OrderStatus @default(PREPARING)
+
+  amount Float   @default(0)
+  user   User?   @relation(fields: [userId], references: [id])
+  userId String? @map("user_id")
+
+  products Product[]
+
+  @@map("order")
+}
+
+enum UserRole {
+  USER
+  ADMIN
+}
+
+enum OrderStatus {
+  CANCELLED
+  PREPARING
+  PAID
+  DELIVERING
+  COMPLETED
+}
