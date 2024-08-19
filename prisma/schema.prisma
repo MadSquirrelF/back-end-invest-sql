@@ -12,19 +12,20 @@ model User {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  username    String @default("No name")
-  description String @default("New user")
-  firstname   String
-  email       String @unique
-  password    String
-  lastname    String
-  phone       String
-  country     String @default("Россия")
-  city        String @default("Челябинск")
-  street      String
-  sex         String @default("Мужской")
-  age         Int    @default(18)
-  avatarPath  String @default("/uploads/default-avatar.svg") @map("avatar_path")
+  username       String @default("No name")
+  description    String @default("New user")
+  firstname      String @default("")
+  email          String @unique
+  password       String
+  backgroundPath String @default("/uploads/default-bg.png") @map("background_path")
+  lastname       String @default("")
+  phone          String @default("")
+  country        String @default("Россия")
+  city           String @default("Челябинск")
+  street         String @default("")
+  sex            String @default("Мужской")
+  age            Int    @default(18)
+  avatarPath     String @default("/uploads/default-avatar.svg") @map("avatar_path")
 
   isEmailValid Boolean  @default(false) @map("is_email_valid")
   role         UserRole @default(USER)
