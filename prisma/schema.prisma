@@ -17,7 +17,7 @@ model User {
   firstname      String @default("")
   email          String @unique
   password       String
-  backgroundPath String @default("/uploads/default-bg.png") @map("background_path")
+  backgroundPath String @default("/uploads/users/bg/default-bg.png") @map("background_path")
   lastname       String @default("")
   phone          String @default("")
   country        String @default("Россия")
@@ -25,7 +25,7 @@ model User {
   street         String @default("")
   sex            String @default("Мужской")
   age            Int    @default(18)
-  avatarPath     String @default("/uploads/default-avatar.svg") @map("avatar_path")
+  avatarPath     String @default("/uploads/users/default-avatar.svg") @map("avatar_path")
 
   isEmailValid Boolean  @default(false) @map("is_email_valid")
   role         UserRole @default(USER)
@@ -47,6 +47,10 @@ model Post {
   slug        String @unique
   description String
 
+  poster String @default("/uploads/posts/default-poster.png")
+
+  info Json
+
   author User @relation(fields: [userId], references: [id])
 
   category String @default("Новость")
@@ -65,6 +69,8 @@ model Product {
   slug        String @unique
   description String
 
+
+  poster String 
   views  Int     @default(0)
   user   User?   @relation(fields: [userId], references: [id])
   userId String? @map("user_id")
